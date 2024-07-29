@@ -1,0 +1,7 @@
+.container{
+    height: 60vh;
+}
+.container div button{
+    width: 65px;
+    height: 35px;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/header') %>
+    <link rel="stylesheet" href="css/signupstyle.css">
+</head>
+<body>
+    <section>
+        <div class="container">
+            <form action="/auth/register" method="POST" id="form">
+                <h3>Register</h3><br>
+                <input type="text" name="name" placeholder="Name" required><br>
+                <div class="nameerr"></div>
+                <input type="email" name="email" id="email" placeholder="Email" required><br>
+                <div class="emailerr"></div>
+                <input type="password" name="password" id="password" placeholder="Password" required><br>
+                <div class="passworderr"></div>
+                <button type="submit" class="log-btn">Register</button>
+                <br>
+            </form>
+        </div>
+    </section>
+</body>
+<script>
+    const form = document.querySelector('form');
+        const emailError = document.querySelector('.emailerr');
+        const passwordError = document.querySelector('.passworderr');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = form.name.value;
+            const email = form.email.value;
+            const password = form.password.value;
+          
+            emailError.textContent = '';
+            passwordError.textContent = '';
+            try{
+          const res = await fetch('/auth/register',{
+            method:'POST',
+            headers:{
+              'Content-Type' : 'application/json'
+            },
+            body:JSON.stringify({name,email,password})
+          }
+
+          );
+
+          const data = await res.json();
+         
+          
+          if (data.errors) {
+                emailError.textContent = data.errors.email || '';
+                passwordError.textContent = data.errors.password || '';
+            } else if (data.redirect) {
+                window.location.href = data.redirect;
+            } else if (data.message) {
+                emailError.textContent = data.message;
+            }
+          }
+          catch(err){
+            console.log(err);
+          }
+        
+        })
+</script>
+</html>
